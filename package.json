@@ -1,0 +1,17 @@
+{
+  "name": "express-example-rohan",
+  "version": "1.0.0",
+  "description": "a simple api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "Rein Op 't Land",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
+}
