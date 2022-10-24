@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 // read request bodies when they are Content-Type: application/json
-app.use(express.json());
+app.use(express.json()); // "use"ing a middleware
 
 const PORT = process.env.PORT || 4000;
 
@@ -12,16 +12,32 @@ const students = [
   { id: 3, name: "Pierre" },
 ];
 
+// GET /
 app.get("/", (req, res) => {
   res.send("HELLO");
 });
 
+// GET /students
 app.get("/students", (req, res) => {
   res.json(students);
 });
 
+// GET /students/:id
+// route parameter -> :id
+app.get("/students/:id", (req, res) => {
+  const student = students.find(
+    (student) => student.id === Number(req.params.id)
+  );
+
+  if (!student) {
+    return res.status(404).json({ message: "student not found" });
+  }
+
+  res.json(student);
+});
+
+// POST /students
 app.post("/students", (req, res) => {
-  //   console.log("ARE WE GETTING A POST REQUEST??", req.body);
   const newStudent = { id: students.length + 1, name: req.body.name };
   students.push(newStudent);
   res.status(201).json({ message: "Student created" });
