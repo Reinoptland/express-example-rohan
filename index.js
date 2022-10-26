@@ -39,6 +39,34 @@ app.get("/students/:id", (req, res) => {
 // CREATE
 // POST /students
 app.post("/students", (req, res) => {
+  const requiredProperties = [
+    { key: "name", type: "string" },
+    { key: "city", type: "string" },
+  ];
+
+  const errors = [];
+  for (const property of requiredProperties) {
+    if (!req.body[property.key]) {
+      return res.status(400).json({
+        message: `You must enter a ${property.key} to create a new student`,
+      });
+    }
+
+    if (typeof req.body[property.key] !== property.type) {
+      errors.push({
+        message: `The property ${property.key} should be ${
+          property.type
+        }, you sent ${typeof req.body[property.key]}`,
+      });
+    }
+  }
+
+  if (errors.length > 0) {
+    return res
+      .status(400)
+      .json({ message: "validation error", errors: errors });
+  }
+
   const newStudent = {
     id: students.length + 1,
     name: req.body.name,
