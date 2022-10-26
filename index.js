@@ -1,5 +1,7 @@
+const { response } = require("express");
 const express = require("express");
 const app = express();
+const z = require("zod");
 
 // read request bodies when they are Content-Type: application/json
 app.use(express.json()); // "use"ing a middleware
@@ -38,42 +40,35 @@ app.get("/students/:id", (req, res) => {
 
 // CREATE
 // POST /students
+
+const Student = z.object({
+  name: z.string().min(2),
+  city: z.string().min(2),
+  email: z.string().email(),
+});
+
 app.post("/students", (req, res) => {
-  const requiredProperties = [
-    { key: "name", type: "string" },
-    { key: "city", type: "string" },
-  ];
+  try {
+    const validatedInput = Student.parse(req.body);
+    console.log(validatedInput);
 
-  const errors = [];
-  for (const property of requiredProperties) {
-    if (!req.body[property.key]) {
-      return res.status(400).json({
-        message: `You must enter a ${property.key} to create a new student`,
-      });
-    }
-
-    if (typeof req.body[property.key] !== property.type) {
-      errors.push({
-        message: `The property ${property.key} should be ${
-          property.type
-        }, you sent ${typeof req.body[property.key]}`,
-      });
+    const newStudent = {
+      id: students.length + 1,
+      name: req.body.name,
+      city: req.body.city,
+    };
+    students.push(newStudent);
+    res.status(201).json({ message: "Student created" });
+  } catch (error) {
+    console.log(error.issues, error.name);
+    if (error.name === "ZodError") {
+      return res
+        .status(400)
+        .json({ message: "validation error", errors: error.issues });
+    } else {
+      return res.status(500).json({ message: "Something went wrong, sorry!" });
     }
   }
-
-  if (errors.length > 0) {
-    return res
-      .status(400)
-      .json({ message: "validation error", errors: errors });
-  }
-
-  const newStudent = {
-    id: students.length + 1,
-    name: req.body.name,
-    city: req.body.city,
-  };
-  students.push(newStudent);
-  res.status(201).json({ message: "Student created" });
 });
 
 // DESTROY
