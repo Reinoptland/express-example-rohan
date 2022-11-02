@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
 // READ
 // GET /students
 app.get("/students", (req, res) => {
+  // get from db
   res.json(students);
 });
 
