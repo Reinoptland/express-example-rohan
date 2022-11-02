@@ -8,3 +8,6 @@
 6. Inspect the tables (using prisma studio -> GUI) `npx prisma studio`
 7. [x] Insert some data (seeding)
 8. Rewrite our express endpoints
+   - Test each endpoint current version
+   - Rewrite the endpoint
+   - Test again
